@@ -1,0 +1,186 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "multiple_gateways": {
+        "description": "Gateway auswählen",
+        "data": {
+          "gateway_id": "Gateway"
+        }
+      },
+      "single_gateway": {
+        "description": "Gateway {name} einrichten? Sensoren erscheinen nach ihrer nächsten Übertragung.",
+        "data": {
+          "send_data_to_cloud": "Messwerte an die Cloud weiterleiten"
+        }
+      },
+      "user": {
+        "menu_options": {
+          "automatic": "Automatisch suchen (gleiches Subnetz)",
+          "manual": "Gateway-IP eingeben (auch über VLANs)"
+        }
+      },
+      "manual": {
+        "title": "Gateway über IP verbinden",
+        "description": "IPv4-Adresse des Gateways und einen freien TCP-Port auf Home Assistant eingeben. HA benötigt zum Gateway UDP 8003; das Gateway benötigt zu HA den Proxy-TCP-Port. Sensoren erscheinen nach ihrer nächsten Übertragung.",
+        "data": {
+          "gateway_ip": "IPv4-Adresse des Gateways",
+          "proxy_port": "Proxy-TCP-Port (0 = automatisch)",
+          "send_data_to_cloud": "Messwerte an die Cloud weiterleiten"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Dieses Gateway ist bereits eingerichtet.",
+      "no_gateways": "Keine neuen Gateways gefunden.",
+      "no_devices_found": "Keine Gateways gefunden.",
+      "unknown": "Gateway konnte nicht initialisiert werden."
+    },
+    "error": {
+      "invalid_host": "Eine IPv4-Unicast-Adresse eingeben.",
+      "cannot_connect": "Kein passendes Gateway hat geantwortet. IP-Adresse, Routing und UDP-Port 8003 prüfen."
+    }
+  },
+  "options": {
+    "step": {
+      "proxy": {
+        "description": "Ausgabe, Gateway-Adresse und Proxy-Port ändern. Eine neue IP muss zum selben Gateway gehören.",
+        "data": {
+          "gateway_ip": "Gateway-IP (leer = Broadcast)",
+          "proxy_port": "Proxy-TCP-Port (0 = automatisch)",
+          "mode": "Ausgabe",
+          "send_data_to_cloud": "Messwerte an die Cloud weiterleiten",
+          "mqtt_topic_prefix": "MQTT-Themenpräfix"
+        },
+        "data_description": {
+          "gateway_ip": "Eine DHCP-Reservierung für das Gateway verwenden.",
+          "proxy_port": "Für Firewall-Regeln einen festen freien Port wählen. Jedes Gateway braucht einen eigenen Port.",
+          "mode": "Native Home-Assistant-Entitäten oder MQTT-Ausgabe.",
+          "mqtt_topic_prefix": "Präfix der MQTT-Themen."
+        }
+      }
+    },
+    "error": {
+      "invalid_host": "Eine IPv4-Unicast-Adresse eingeben.",
+      "cannot_connect": "Kein passendes Gateway hat geantwortet. IP-Adresse, Routing und UDP-Port 8003 prüfen."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "battery": {
+        "name": "[%key:component::binary_sensor::entity_component::battery::name%]"
+      },
+      "is_raining": {
+        "name": "Is raining"
+      },
+      "wetness": {
+        "name": "Wetness"
+      },
+      "alarm": {
+        "name": "[%key:component::binary_sensor::entity_component::smoke::name%]"
+      },
+      "alarm_1": {
+        "name": "[%key:component::binary_sensor::entity_component::smoke::name%] 1"
+      },
+      "alarm_2": {
+        "name": "[%key:component::binary_sensor::entity_component::smoke::name%] 2"
+      },
+      "alarm_3": {
+        "name": "[%key:component::binary_sensor::entity_component::smoke::name%] 3"
+      },
+      "alarm_4": {
+        "name": "[%key:component::binary_sensor::entity_component::smoke::name%] 4"
+      },
+      "door_window": {
+        "name": "[%key:component::binary_sensor::entity_component::window::name%]"
+      },
+      "use_proxy": {
+        "name": "Proxy is used"
+      }
+    },
+    "sensor": {
+      "temperature": {
+        "name": "[%key:component::sensor::entity_component::temperature::name%]"
+      },
+      "cable_temperature": {
+        "name": "Cable temperature"
+      },
+      "external_temperature": {
+        "name": "External temperature"
+      },
+      "external_temperature_1": {
+        "name": "External temperature 1"
+      },
+      "external_temperature_2": {
+        "name": "External temperature 2"
+      },
+      "external_temperature_3": {
+        "name": "External temperature 3"
+      },
+      "external_temperature_4": {
+        "name": "External temperature 4"
+      },
+      "outdoor_temperature": {
+        "name": "Outdoor temperature"
+      },
+      "pool_temperature": {
+        "name": "Pool temperature"
+      },
+      "humidity": {
+        "name": "[%key:component::sensor::entity_component::humidity::name%]"
+      },
+      "co2": {
+        "name": "[%key:component::sensor::entity_component::carbon_dioxide::name%]"
+      },
+      "air_pressure": {
+        "name": "[%key:component::sensor::entity_component::atmospheric_pressure::name%]"
+      },
+      "accumulated_rain": {
+        "name": "Accumulated rain"
+      },
+      "last_rain": {
+        "name": "Last rain"
+      },
+      "last_hour_rain": {
+        "name": "Last hour rain"
+      },
+      "last_day_rain": {
+        "name": "Last day rain"
+      },
+      "time_span": {
+        "name": "Time span"
+      },
+      "wind_speed": {
+        "name": "[%key:component::sensor::entity_component::wind_speed::name%]"
+      },
+      "gust": {
+        "name": "Gust"
+      },
+      "wind_direction": {
+        "name": "Wind direction"
+      },
+      "proxy": {
+        "name": "Proxy"
+      },
+      "key_pressed": {
+        "name": "Key pressed",
+        "state": {
+          "none": "None",
+          "green": "Green",
+          "orange": "Orange",
+          "red": "Red",
+          "yellow": "Yellow"
+        }
+      },
+      "key_press_type": {
+        "name": "Key press type",
+        "state": {
+          "none": "None",
+          "short": "Short",
+          "double": "Double",
+          "long": "Long"
+        }
+      }
+    }
+  }
+}

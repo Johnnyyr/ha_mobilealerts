@@ -14,7 +14,7 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from mobilealerts import Gateway, Proxy, Sensor
 
-from .const import CONF_SEND_DATA_TO_CLOUD, DOMAIN
+from .const import CONF_GATEWAY_IP, CONF_PROXY_PORT, CONF_SEND_DATA_TO_CLOUD, DOMAIN
 from .coordinator import MobileAlertesDataCoordinator
 from .util import gateway_full_name
 
@@ -27,19 +27,30 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Mobile-Alerts from a config entry."""
     _LOGGER.debug("async_setup_entry %r", entry.as_dict())
 
-    gateway = Gateway(entry.unique_id)
-    gateway.send_data_to_cloud = entry.options.get(CONF_SEND_DATA_TO_CLOUD, True)
-    if not await gateway.init():
-        raise ConfigEntryNotReady("Error initialization of MobileAlerts Gateway (%s)", gateway.gateway_id)
+    settings = {**entry.data, **entry.options}
+    host = settings.get(CONF_GATEWAY_IP) or None
+    gateway = Gateway(entry.unique_id, gateway_ip=host)
+    gateway.send_data_to_cloud = settings.get(CONF_SEND_DATA_TO_CLOUD, True)
+    try:
+        initialized = await gateway.init()
+    except OSError as err:
+        raise ConfigEntryNotReady(f"Cannot reach Mobile Alerts gateway: {err}") from err
+    if not initialized:
+        raise ConfigEntryNotReady(
+            f"Cannot initialize Mobile Alerts gateway {entry.unique_id}"
+        )
 
     gateway_ip = gateway.ip_address
     proxy_ip = await async_get_source_ip(hass, gateway_ip)
     _LOGGER.debug("async_setup_entry gateway_ip %s, proxy_ip %s", gateway_ip, proxy_ip)
-    proxy = Proxy(None, proxy_ip)
+    proxy = Proxy(None, proxy_ip, settings.get(CONF_PROXY_PORT, 0))
 
     coordinator = MobileAlertesDataCoordinator(hass, entry, proxy, gateway)
 
-    await proxy.start()
+    try:
+        await proxy.start()
+    except OSError as err:
+        raise ConfigEntryNotReady(f"Cannot bind Mobile Alerts proxy: {err}") from err
     proxy.attach_gateway(gateway)
 
     # Relay cloud data straight to the Mobile-Alerts cloud instead of via the

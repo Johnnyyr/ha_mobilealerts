@@ -11,6 +11,9 @@ GATEWAY_DEF_NAME: Final = "MOBILEALERTS-Gateway"
 MANUFACTURER: Final = "La Crosse Tech. / TFA Dostmann"
 
 CONF_GATEWAY: Final = "gateway_id"
+CONF_GATEWAY_IP: Final = "gateway_ip"
+CONF_PROXY_PORT: Final = "proxy_port"
+DEFAULT_PROXY_PORT: Final = 8088
 CONF_SEND_DATA_TO_CLOUD: Final = "send_data_to_cloud"
 CONF_MODE: Final = "mode"
 CONF_MQTT_TOPIC_PREFIX: Final = "mqtt_topic_prefix"

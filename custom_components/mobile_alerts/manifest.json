@@ -1,17 +1,32 @@
 {
   "domain": "mobile_alerts",
   "name": "Mobile-Alerts",
-  "codeowners": ["@m-l", "@Silver-Volt4", "@msvb04", "@PlusPlus-ua"],
+  "codeowners": [
+    "@Johnnyyr"
+  ],
   "iot_class": "local_push",
   "config_flow": true,
-  "documentation": "https://www.home-assistant.io/integrations/mobile_alerts",
-  "dependencies": ["network"],
-  "after_dependencies": ["mqtt"],
-  "requirements": ["mobilealerts==0.1.13"],
-  "supported_brands": { "tfa_weatherhub": "TFA WeatherHub" },
-  "dhcp": [
-    { "registered_devices": true },
-    { "macaddress": "001D8C*" }
+  "documentation": "https://github.com/Johnnyyr/ha_mobilealerts",
+  "dependencies": [
+    "network"
   ],
-  "version": "0.3.14"
+  "after_dependencies": [
+    "mqtt"
+  ],
+  "requirements": [
+    "mobilealerts @ https://github.com/Johnnyyr/python-mobilealerts/archive/8d24673b045db4564a697469aa969856b896c8bd.zip"
+  ],
+  "supported_brands": {
+    "tfa_weatherhub": "TFA WeatherHub"
+  },
+  "dhcp": [
+    {
+      "registered_devices": true
+    },
+    {
+      "macaddress": "001D8C*"
+    }
+  ],
+  "version": "0.3.15",
+  "issue_tracker": "https://github.com/Johnnyyr/ha_mobilealerts/issues"
 }

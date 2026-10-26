@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.3.15] - 2026-10-26
+
+### Added
+
+- Optional manual IPv4 gateway setup with routed UDP communication across VLANs.
+- Configurable proxy TCP port; persisted host and port are restored on startup.
+- Validated gateway IP changes in options, retaining the MAC-based device identity.
+- German setup/options translations and fork/firewall documentation.
+- Pinned Johnnyyr library fork, preserving the published mobilealerts 0.1.13 sensor behavior.
+
 ## [0.3.14] - 2026-09-30
 
 ### Fixed

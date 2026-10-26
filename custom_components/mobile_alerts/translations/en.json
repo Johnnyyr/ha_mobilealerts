@@ -10,7 +10,7 @@
         "step": {
             "multiple_gateways": {
                 "data": {
-                    "gateway": "Gateways"
+                    "gateway_id": "Gateway"
                 },
                 "description": "Select a gateway to setup"
             },
@@ -19,7 +19,26 @@
                     "send_data_to_cloud": "Send data to cloud"
                 },
                 "description": "Do you want to setup the {name}?\n\nThe integration acts as proxy server between gateway and cloud. Sensors will appear as soon as they send data to the gateway. For some sensors, it may take up to few hours. Would you like to send data to cloud?"
+            },
+            "user": {
+                "menu_options": {
+                    "automatic": "Search automatically (same subnet)",
+                    "manual": "Enter gateway IP (also across VLANs)"
+                }
+            },
+            "manual": {
+                "title": "Connect to a gateway by IP",
+                "description": "Enter the gateway IPv4 address and a free TCP port on Home Assistant. Permit UDP 8003 from HA to the gateway and the proxy TCP port from the gateway to HA. Sensors appear after their next transmission.",
+                "data": {
+                    "gateway_ip": "Gateway IPv4 address",
+                    "proxy_port": "Proxy TCP port (0 = automatic)",
+                    "send_data_to_cloud": "Forward readings to the cloud"
+                }
             }
+        },
+        "error": {
+            "invalid_host": "Enter a unicast IPv4 address.",
+            "cannot_connect": "No matching gateway replied. Check its IP, routing and UDP port 8003."
         }
     },
     "entity": {
@@ -146,14 +165,22 @@
                 "data": {
                     "mode": "Mode",
                     "send_data_to_cloud": "Send data to cloud",
-                    "mqtt_topic_prefix": "MQTT topic prefix"
+                    "mqtt_topic_prefix": "MQTT topic prefix",
+                    "gateway_ip": "Gateway IPv4 address (blank = broadcast)",
+                    "proxy_port": "Proxy TCP port (0 = automatic)"
                 },
                 "data_description": {
                     "mode": "Expose readings as native Home Assistant entities, or publish them to MQTT in the sarnau/MMMMobileAlerts JSON format.",
-                    "mqtt_topic_prefix": "Topic prefix for MQTT gateway mode. Data is published to <prefix><sensor_id>/json."
+                    "mqtt_topic_prefix": "Topic prefix for MQTT gateway mode. Data is published to <prefix><sensor_id>/json.",
+                    "gateway_ip": "For a manual connection, the address must belong to the same gateway. Reserve its DHCP address.",
+                    "proxy_port": "Use a free, fixed port for VLAN firewall rules; each gateway needs its own port."
                 },
                 "description": "Choose how sensor readings are exposed and whether data is still forwarded to the Mobile-Alerts cloud (needed for the mobile app)."
             }
+        },
+        "error": {
+            "invalid_host": "Enter a unicast IPv4 address.",
+            "cannot_connect": "No matching gateway replied. Check its IP, routing and UDP port 8003."
         }
     }
 }

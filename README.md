@@ -1,5 +1,109 @@
 # Home Assistant support for Mobile-Alerts
 
+## About this fork
+
+This is [Johnnyyr/ha_mobilealerts](https://github.com/Johnnyyr/ha_mobilealerts),
+a fork of [m-l/ha_mobilealerts](https://github.com/m-l/ha_mobilealerts), which is
+based on [PlusPlus-ua/ha_mobilealerts](https://github.com/PlusPlus-ua/ha_mobilealerts).
+Original credits and MIT copyright/license notices are preserved. This fork adds
+manual IPv4 setup across routed VLANs, a configurable proxy port, and German setup
+translations. It uses the companion [Johnnyyr/python-mobilealerts](https://github.com/Johnnyyr/python-mobilealerts)
+fork, pinned to an immutable commit rather than a moving branch or a PyPI release.
+
+Repository names, HA integration domain (`mobile_alerts`) and Python import name
+(`mobilealerts`) stay unchanged. Install only one fork of this HA integration at a
+time: forks share the same integration domain and cannot be installed side by side.
+No mobile app, cloud account or MQTT broker is needed in native-entities mode.
+The upstream library may still attempt an optional cloud lookup of a new sensor's
+name; forwarding measurements can be disabled independently. A local default name
+is used when that lookup fails.
+
+## Installing this fork with HACS
+
+1. In HACS, open **Custom repositories** and add
+   `https://github.com/Johnnyyr/ha_mobilealerts` as an **Integration**.
+2. Download this fork and restart Home Assistant. If another Mobile-Alerts fork
+   is already installed, back up its configuration and replace its HACS source
+   rather than installing both. Existing devices use the same domain and MAC IDs.
+3. Open **Settings → Devices & services → Add integration → Mobile-Alerts**.
+4. Choose **Enter gateway IP**, enter the gateway IPv4 address, and choose a free
+   proxy TCP port (for example `8088`). Disable cloud forwarding for local operation.
+5. Keep native entities selected. The gateway is identified by its MAC; sensors
+   appear after their next transmission. For a rain gauge, trigger the rocker
+   once to test reception; dry periods may have long reporting intervals.
+
+The fork's dependency is installed automatically by HA. Do not replace it with
+`pip install mobilealerts` from PyPI: that release lacks the unicast argument.
+The first installation/update needs outbound HTTPS to GitHub for the dependency
+archive. No custom `configuration.yaml` entries or MQTT installation are required.
+
+## Routed VLANs and firewall
+
+The manual path uses directed UDP, so the gateway can remain in another subnet.
+Automatic discovery still requires the local broadcast domain. Reserve the
+gateway's IPv4 address through DHCP. On **Configure**, its IP can be updated
+without recreating devices; the replacement IP must answer with the same MAC.
+An empty address switches back to broadcast control. The proxy port is editable;
+`0` keeps the legacy automatic port and is unsuitable for narrow static rules.
+Each gateway requires its own free fixed TCP port.
+
+For example, with HA `192.168.10.102`, gateway `192.168.66.81`, and proxy TCP `8088`:
+
+| Source | Destination | Protocol / destination port | Purpose |
+| --- | --- | --- | --- |
+| `192.168.10.102` | `192.168.66.81` | UDP `8003` | Discovery, configuration and refresh |
+| `192.168.66.81` | `192.168.10.102` | TCP `8088` | Gateway uploads to the HA proxy |
+
+Allow stateful replies, place these host-specific exceptions before the relevant
+inter-VLAN deny rule, and retain normal DHCP service for the gateway. No mDNS relay,
+broadcast forwarding or Internet port forwarding is needed. These are example
+rules, not changes automatically made by this integration. An occupied port causes
+setup to retry without redirecting the gateway to an unusable listener.
+
+### Replacing an existing Matrix / maserver proxy
+
+The gateway has one active proxy destination. Before enabling this integration:
+record the previous proxy IP/port, stop and disable the old proxy service's automatic
+configuration, then configure the HA integration. Otherwise the two controllers can
+keep overwriting each other's gateway settings. For Cypher Matrix this is the
+`cypher-mobile-alerts.service` on the Pi; disable its automatic start as part of a
+planned handover. This repository does not change that service or the firewall.
+Matrix will stop receiving new gateway measurements unless a separate HA-to-Matrix
+feed is implemented. Existing saved Matrix measurements are not deleted.
+
+For rollback, unload/remove the HA integration first, then restore the recorded
+proxy destination and re-enable the previous service. Changing proxy settings does
+not establish that a sensor is transmitting: verify a fresh timestamp and rain
+counter change from a physical rocker event.
+
+## Development verification
+
+Clone the companion library as a sibling directory named `python-mobilealerts`,
+then use Python 3.14 (matching HA 2026.10):
+
+```bash
+python3.14 -m venv .venv
+.venv/bin/python -m pip install -r requirements_test.txt
+.venv/bin/python -m pytest -q tests
+python3 .github/scripts/check_changelog.py
+```
+
+Tests use real Home Assistant config-flow classes and replace external network and
+registry boundaries. They do not modify a running HA installation or gateway.
+
+## Fork maintenance and contributions
+
+`origin` is your Johnnyyr fork; `upstream` points to the project it was forked from.
+Work on a feature branch, test it, and push it to your fork. A pull request proposes
+merging that branch into another branch/repository; it does not change upstream
+until its maintainers merge it. There are two codebases: this HA UI/entity integration
+and the reusable transport library. Submit transport changes to the library first,
+then update the HA dependency after a compatible upstream release is available.
+Maintainer messages and upstream PRs are not submitted automatically by this fork.
+
+The LICENSE files retain the original copyright and permission notice. The origin
+links above and existing Credits make the lineage visible; renaming is unnecessary.
+
 ## Overview
 
 This integration supports various Mobile-Alerts sensors. The integration acts as proxy server between Mobile-Alerts gateway and cloud. 

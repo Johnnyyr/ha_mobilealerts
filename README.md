@@ -47,12 +47,12 @@ An empty address switches back to broadcast control. The proxy port is editable;
 `0` keeps the legacy automatic port and is unsuitable for narrow static rules.
 Each gateway requires its own free fixed TCP port.
 
-For example, with HA `192.168.10.102`, gateway `192.168.66.81`, and proxy TCP `8088`:
+For example, with HA `192.168.1.100`, gateway `192.168.2.100`, and proxy TCP `8088`:
 
 | Source | Destination | Protocol / destination port | Purpose |
 | --- | --- | --- | --- |
-| `192.168.10.102` | `192.168.66.81` | UDP `8003` | Discovery, configuration and refresh |
-| `192.168.66.81` | `192.168.10.102` | TCP `8088` | Gateway uploads to the HA proxy |
+| `192.168.1.100` | `192.168.2.100` | UDP `8003` | Discovery, configuration and refresh |
+| `192.168.2.100` | `192.168.1.100` | TCP `8088` | Gateway uploads to the HA proxy |
 
 Allow stateful replies, place these host-specific exceptions before the relevant
 inter-VLAN deny rule, and retain normal DHCP service for the gateway. No mDNS relay,
